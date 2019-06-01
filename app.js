@@ -25,7 +25,7 @@ const postRoutes = require("./routes/post"); // brings in the "router" thing (me
 const authRoutes = require("./routes/auth"); // brings in the "router" thing (method?) from auth.js file (believe this is used to decide which page to show in the browser)
 const userRoutes = require("./routes/user"); // brings in the "router" thing (method?) from auth.js file (believe this is used to decide which page to show in the browser)
 // apiDocs
-app.get("/", (req, res) => { // this is a direct route to the homepage where we will have some api info for now
+app.get("/api", (req, res) => { // this is a direct route to the homepage where we will have some api info for now
   fs.readFile("docs/apiDocs.json", (err, data) =>{ // readFile is a function through fs and we are pointing at our json file we want it to read
     if(err) {
       res.status(400).json({ // standard error checking
@@ -43,9 +43,9 @@ app.use(bodyParser.json()); // tells the system that you want it to use json
 app.use(cookieParser()); // this is how you use the cookie parser that deals with user authentication on the frontend
 app.use(expressValidator()); // makes errors look nicer, allows us to use "check" method
 app.use(cors()); // allows for cross-origin resource sharing, our backend may be hosted on 8080 and our frontend on 3000 and because of cors this won't be an issue
-app.use("/", postRoutes);  // I think this is what the routes folder feeds into; can leave as "/" here because the right path is handled in routes folder
-app.use("/", authRoutes);  // I think this is what the routes folder feeds into; can leave as "/" here because the right path is handled in routes folder
-app.use("/", userRoutes);  // I think this is what the routes folder feeds into; can leave as "/" here because the right path is handled in routes folder
+app.use("/api", postRoutes);  // I think this is what the routes folder feeds into; can leave as "/" here because the right path is handled in routes folder
+app.use("/api", authRoutes);  // I think this is what the routes folder feeds into; can leave as "/" here because the right path is handled in routes folder
+app.use("/api", userRoutes);  // I think this is what the routes folder feeds into; can leave as "/" here because the right path is handled in routes folder
 app.use(function (err, req, res, next) { // this whole function comes from the express-jwt page in the "error handling" section, deals with trying to access protected routes as an unauthorized user
   if (err.name === 'UnauthorizedError') { // if the error is exactly equal to unauthorizedError, then we will display the below
     res.status(401).json({error: "Unauthorized!"}); // gives a 401 status and a json error response
