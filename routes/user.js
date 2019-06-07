@@ -10,7 +10,8 @@ const {
   addFollower,
   removeFollowing,
   removeFollower,
-  findPeople
+  findPeople,
+  hasAuthorization
 } = require("../controllers/user"); // allows us to directly use the functions we defined in a different file - the "../ gets out of current folder and gets us into another folder"
 const { requireSignin } = require("../controllers/auth"); // going to be used as a middleware to authenticate a route
 
@@ -21,8 +22,8 @@ router.put("/user/unfollow", requireSignin, removeFollowing, removeFollower); //
 
 router.get("/users", allUsers); // gives us list of all users; get request because we aren't posting anything
 router.get("/user/:userId", requireSignin, getUser); // gives us one user based on the userId we included in request - colon means anything after the / will be captured as userId (kinda cool)
-router.put("/user/:userId", requireSignin, updateUser); // to update in HTTP you use "put"
-router.delete("/user/:userId", requireSignin, deleteUser); // to update in HTTP you use "put"
+router.put("/user/:userId", requireSignin, hasAuthorization, updateUser); // to update in HTTP you use "put"
+router.delete("/user/:userId", requireSignin, hasAuthorization, deleteUser); // to update in HTTP you use "put"
 // Photo
 router.get("/user/photo/:userId", userPhoto);
 

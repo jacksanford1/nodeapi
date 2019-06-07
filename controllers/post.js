@@ -81,7 +81,13 @@ exports.postsByUser = (req, res) => { // this is trying to get all the posts by 
 };
 
 exports.isPoster = (req, res, next) => { // this is going to determine if the current logged in user is the poster of a specific post
-  let isPoster = req.post && req.auth && req.post.postedBy._id == req.auth._id; // if req.post and req.auth are both included in the request AND they match, then we're all good - this threw an error at one point because we used strict equality === instead of loose equality ==
+  let sameUser = req.post && req.auth && req.post.postedBy._id == req.auth._id; // this is the old way before super admin, if req.post and req.auth are both included in the request AND they match, then we're all good - this threw an error at one point because we used strict equality === instead of loose equality ==
+  let adminUser = req.post && req.auth && req.auth.role === "admin"; // this is our new check to see if the user is an admin (and therefore can delete anyone's post)
+
+  console.log("req.post ", req.post, " req.auth ", req.auth)
+  console.log("SAMEUSER: ", sameUser, " ADMINUSER: ", adminUser)
+
+  let isPoster = sameUser || adminUser
 
   // console.log("req.post: ", req.post);
   // console.log("req.auth: ", req.auth);

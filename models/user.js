@@ -37,8 +37,11 @@ const userSchema = new mongoose.Schema({ // creates the schema that maps to the 
   resetPasswordLink: {
     data: String,
     default: ""
+  },
+  role: {
+    type: String,
+    default: "subscriber"
   }
-
 });
 
 // virtual field

@@ -20,12 +20,19 @@ exports.userById = (req, res, next, id) => { // fetches the information associat
 };
 
 exports.hasAuthorization = (req, res, next) => { // this method is going to check that the ids for profile and auth match
-  const authorized = req.profile && req.auth && req.profile._id === req.auth._id; // makes sure profile and auth are both included in request and checks that they match
+  let sameUser = req.profile && req.auth && req.profile._id == req.auth._id // makes sure profile and auth are both included in request and checks that they match, this is if you are not admin
+  let adminUser = req.profile && req.auth && req.auth.role === "admin" // checks if you are admin
+  const authorized = sameUser || adminUser; // authorized is true if you are the same user or if you are an admin
+
+  console.log("req.profile ", req.profile, " req.auth ", req.auth)
+  console.log("SAMEUSER ", sameUser, " ADMINUSER ", adminUser)
+
   if(!authorized) { // if they don't match
     return res.status(403).json({ // 403 response means unauthorized
       error: "User is not authorized to perform this action"
     });
   }
+  next() // need this because it's a middleware
 };
 
 exports.allUsers = (req, res) => { // this method is for listing all the users of our app
@@ -36,7 +43,7 @@ exports.allUsers = (req, res) => { // this method is for listing all the users o
       });
     }
     res.json(users); // this would be ({users: users}) but when key and value are the same, only need to write it once
-  }).select("name email updated created"); // find method ends here and we are choosing which user fields to display (don't need to see hashed password, etc.) - can also include "updated" even if a user has never updated and field is not available
+  }).select("name email updated created role"); // find method ends here and we are choosing which user fields to display (don't need to see hashed password, etc.) - can also include "updated" even if a user has never updated and field is not available
 };
 
 exports.getUser = (req, res) => { // fetches a single user
